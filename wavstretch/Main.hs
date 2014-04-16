@@ -23,11 +23,11 @@ fromArrays ars = do
 main :: IO ()
 main = do
   argv <- getArgs
-  (fin, fout) <- case argv of
-    [x, y] -> return (x, y)
+  (fin, fout, ratio) <- case argv of
+    [x, y, z] -> return (x, y, read z)
     _ -> error "invalid usage"
   WAVE (WAVEHeader nchannels fps bits nframes) samples <- getWAVEFile fin
-  s <- new (fromIntegral fps) (fromIntegral nchannels) defaultOptions 1.5 1
+  s <- new (fromIntegral fps) (fromIntegral nchannels) defaultOptions ratio 1
   --setDebugLevel s 3
   case nframes of
     Just f -> setExpectedInputDuration s $ fromIntegral f
