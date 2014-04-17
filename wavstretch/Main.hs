@@ -5,20 +5,21 @@ import Sound.RubberBand.Option (defaultOptions)
 
 import Data.WAVE
 import System.Environment (getArgs)
-import Control.Monad (forM, forM_)
+import Control.Monad (forM_)
 import Data.List (transpose)
-import Data.Array.Storable
 import Foreign.C.Types (CFloat)
 
-toArrays :: WAVESamples -> IO [StorableArray Int CFloat]
-toArrays ws = let
-  lists = map (map $ realToFrac . sampleToDouble) $ transpose ws
-  in forM lists $ \fs -> newListArray (0, length fs - 1) fs
+import qualified Data.Vector.Storable as V
 
-fromArrays :: [StorableArray Int CFloat] -> IO WAVESamples
-fromArrays ars = do
-  lists <- mapM getElems ars
-  return $ transpose $ map (map $ doubleToSample . realToFrac) lists
+toArrays :: WAVESamples -> [V.Vector CFloat]
+toArrays ws = do
+  chan <- transpose ws
+  return $ V.fromList $ map (realToFrac . sampleToDouble) chan
+
+fromArrays :: [V.Vector CFloat] -> WAVESamples
+fromArrays ars = transpose $ do
+  ar <- ars
+  return $ map (doubleToSample . realToFrac) $ V.toList ar
 
 main :: IO ()
 main = do
@@ -34,14 +35,17 @@ main = do
     Nothing -> error "no number of frames"
 
   let blocks = groupsOf 1024 samples
-  forM_ (init blocks) $ \block -> do
-    ars <- toArrays block
-    study s ars False
-  forM_ [last blocks] $ \block -> do
-    ars <- toArrays block
-    study s ars True
 
-  ws <- processRetrieveAll s samples
+  putStrLn "Supplying blocks..."
+  forM_ (zip [0..] blocks) $ \(i, block) -> do
+    study s (toArrays block) False
+    print (i :: Int)
+  study s (replicate nchannels V.empty) True
+  putStrLn "Done!"
+
+  WAVE _ samples' <- getWAVEFile fin
+
+  ws <- processRetrieveAll s samples'
   let wav' = WAVE (WAVEHeader nchannels fps bits Nothing) ws
   putWAVEFile fout wav'
 
@@ -65,14 +69,12 @@ processRetrieveAll s samps = do
             putStrLn "needs samples but we don't have any"
             processRetrieveAll s samps
           (block, rest) -> do
-            ars <- toArrays block
-            process s ars $ null rest
+            process s (toArrays block) $ null rest
             processRetrieveAll s rest
     Just n -> do
       ars <- retrieve s n
-      ws <- fromArrays ars
       rest <- processRetrieveAll s samps
-      return $ ws ++ rest
+      return $ fromArrays ars ++ rest
 
 groupsOf :: Int -> [a] -> [[a]]
 groupsOf n xs = case splitAt n xs of

@@ -4,8 +4,8 @@ A nicer layer above the C API.
 
   * The 'State' object is garbage-collected by Haskell.
 
-  * The 'study', 'process', and 'retrieve' functions use 'StorableArray's
-    instead of raw pointers.
+  * The 'study', 'process', and 'retrieve' functions use storable
+    'Vector's instead of raw pointers.
 
   * Some error checking is done in cases like giving arrays of different
     lengths to 'study' and 'process', or giving a different number of arrays
@@ -21,10 +21,9 @@ import Sound.RubberBand.Option
 import Foreign (Ptr, ForeignPtr, newForeignPtr, withForeignPtr, finalizerFree)
 import Control.Applicative ((<$>))
 import Foreign.Marshal.Array (withArray, withArrayLen, mallocArray)
-import Data.Array.Storable
+import qualified Data.Vector.Storable as V
 import Foreign.C.Types (CFloat)
-import Control.Monad (guard, liftM, forM, replicateM)
-import Data.Array.Unsafe (unsafeForeignPtrToStorableArray)
+import Control.Monad (guard, forM, replicateM)
 
 newtype State = State (ForeignPtr Raw.State)
   deriving (Eq)
@@ -87,32 +86,28 @@ setKeyFrameMap s pairs = withRawState s $ \r ->
     withArray (map (fromIntegral . snd) pairs) $ \p2 ->
       Raw.setKeyFrameMap r (length pairs) p1 p2
 
-withStorableArrays :: [StorableArray i e] -> ([Ptr e] -> IO a) -> IO a
-withStorableArrays []       f = f []
-withStorableArrays (x : xs) f =
-  withStorableArray x $ \p ->
-    withStorableArrays xs $ \ps ->
+unsafeWiths :: (V.Storable e) => [V.Vector e] -> ([Ptr e] -> IO a) -> IO a
+unsafeWiths []       f = f []
+unsafeWiths (x : xs) f =
+  V.unsafeWith x $ \p ->
+    unsafeWiths xs $ \ps ->
       f $ p : ps
 
 getUniform :: (Eq a) => [a] -> Maybe a
 getUniform (x : xs) = guard (all (== x) xs) >> Just x
 getUniform []       = Nothing
 
-getLength :: (MArray a e m, Num i, Ix i) => a i e -> m i
-getLength = liftM (\(x, y) -> y - x + 1) . getBounds
-
 -- | Ugly, but needed to share the code for 'study' and 'process'.
 studyProcess ::
   String -> (Raw.State -> Ptr (Ptr CFloat) -> Int -> Bool -> IO ()) ->
-    State -> [StorableArray Int CFloat] -> Bool -> IO ()
+    State -> [V.Vector CFloat] -> Bool -> IO ()
 studyProcess fname f s chans final = do
-  msamples <- fmap getUniform $ mapM getLength chans
-  samples <- case msamples of
+  samples <- case getUniform $ map V.length chans of
     Nothing -> if null chans
-      then return 0 -- is this sensible? user gave no audio so whatever
+      then error $ fname ++ ": no input arrays given"
       else error $ fname ++ ": input arrays have differing lengths"
     Just sam -> return sam
-  withStorableArrays chans $ \pfs ->
+  unsafeWiths chans $ \pfs ->
     withArrayLen pfs $ \len ppf -> do
       numchans <- getChannelCount s
       if numchans == len
@@ -124,10 +119,10 @@ studyProcess fname f s chans final = do
           , show numchans
           ]
 
-study :: State -> [StorableArray Int CFloat] -> Bool -> IO ()
+study :: State -> [V.Vector CFloat] -> Bool -> IO ()
 study = studyProcess "study" Raw.study
 
-process :: State -> [StorableArray Int CFloat] -> Bool -> IO ()
+process :: State -> [V.Vector CFloat] -> Bool -> IO ()
 process = studyProcess "process" Raw.process
 
 -- | Returns 'Nothing' if all data has been fully processed.
@@ -149,14 +144,14 @@ retrieveInto s pfs samples = do
         , show numchans
         ]
 
-retrieve :: State -> Int -> IO [StorableArray Int CFloat]
+retrieve :: State -> Int -> IO [V.Vector CFloat]
 retrieve s samples = do
   numchans <- getChannelCount s
   ps <- replicateM numchans $ mallocArray samples
   actual <- retrieveInto s ps samples
   forM ps $ \p -> do
     fp <- newForeignPtr finalizerFree p
-    unsafeForeignPtrToStorableArray fp (0, actual - 1)
+    return $ V.unsafeFromForeignPtr0 fp actual
 
 getChannelCount :: State -> IO Int
 getChannelCount s = withRawState s Raw.getChannelCount
