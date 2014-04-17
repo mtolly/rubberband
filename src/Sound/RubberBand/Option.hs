@@ -1,6 +1,7 @@
 module Sound.RubberBand.Option where
 
 import Data.Bits
+import Data.Maybe (fromMaybe)
 
 data Options = Options
   { oProcess    :: Process
@@ -43,9 +44,9 @@ getOption i = let
   lookupList = zip (map optionEnum allOptions) allOptions
   mask = foldr (.|.) 0 $ map fst lookupList
   masked = i .&. mask
-  o = case lookup masked lookupList of
-    Nothing -> error $ "getOption: no result for masked value " ++ show masked
-    Just v  -> v
+  o = fromMaybe
+    (error $ "getOption: no result for masked value " ++ show masked)
+    (lookup masked lookupList)
   in o
 
 toOptions :: Int -> Options

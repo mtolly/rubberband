@@ -104,9 +104,9 @@ studyProcess ::
     State -> [V.Vector Float] -> Bool -> IO ()
 studyProcess fname f s chans final = do
   samples <- case getUniform $ map V.length chans of
-    Nothing -> if null chans
-      then error $ fname ++ ": no input arrays given"
-      else error $ fname ++ ": input arrays have differing lengths"
+    Nothing -> error $ fname ++ ": " ++ if null chans
+      then "no input arrays given"
+      else "input arrays have differing lengths"
     Just sam -> return sam
   unsafeWiths chans $ \pfs ->
     withArrayLen pfs $ \len ppf -> do
