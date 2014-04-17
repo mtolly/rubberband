@@ -18,7 +18,8 @@ import qualified Sound.RubberBand.Raw as Raw
 import Sound.RubberBand.Raw (SampleRate, NumChannels, TimeRatio, PitchScale)
 import Sound.RubberBand.Option
 
-import Foreign (Ptr, ForeignPtr, newForeignPtr, withForeignPtr, finalizerFree)
+import Foreign
+  (Ptr, ForeignPtr, newForeignPtr, withForeignPtr, finalizerFree, castPtr)
 import Control.Applicative ((<$>))
 import Foreign.Marshal.Array (withArray, withArrayLen, mallocArray)
 import qualified Data.Vector.Storable as V
@@ -100,7 +101,7 @@ getUniform []       = Nothing
 -- | Ugly, but needed to share the code for 'study' and 'process'.
 studyProcess ::
   String -> (Raw.State -> Ptr (Ptr CFloat) -> Int -> Bool -> IO ()) ->
-    State -> [V.Vector CFloat] -> Bool -> IO ()
+    State -> [V.Vector Float] -> Bool -> IO ()
 studyProcess fname f s chans final = do
   samples <- case getUniform $ map V.length chans of
     Nothing -> if null chans
@@ -111,7 +112,7 @@ studyProcess fname f s chans final = do
     withArrayLen pfs $ \len ppf -> do
       numchans <- getChannelCount s
       if numchans == len
-        then withRawState s $ \r -> f r ppf samples final
+        then withRawState s $ \r -> f r (castPtr ppf) samples final
         else error $ unwords
           [ fname ++ ": passed"
           , show len
@@ -119,10 +120,10 @@ studyProcess fname f s chans final = do
           , show numchans
           ]
 
-study :: State -> [V.Vector CFloat] -> Bool -> IO ()
+study :: State -> [V.Vector Float] -> Bool -> IO ()
 study = studyProcess "study" Raw.study
 
-process :: State -> [V.Vector CFloat] -> Bool -> IO ()
+process :: State -> [V.Vector Float] -> Bool -> IO ()
 process = studyProcess "process" Raw.process
 
 -- | Returns 'Nothing' if all data has been fully processed.
@@ -131,12 +132,12 @@ available s = withRawState s $ \r -> do
   i <- Raw.available r
   return $ guard (i /= (-1)) >> Just i
 
-retrieveInto :: State -> [Ptr CFloat] -> Int -> IO Int
+retrieveInto :: State -> [Ptr Float] -> Int -> IO Int
 retrieveInto s pfs samples = do
   numchans <- getChannelCount s
   withArrayLen pfs $ \len ppf ->
     if len == numchans
-      then withRawState s $ \r -> Raw.retrieve r ppf samples
+      then withRawState s $ \r -> Raw.retrieve r (castPtr ppf) samples
       else error $ unwords
         [ "retrieveInto: passed"
         , show len
@@ -144,13 +145,13 @@ retrieveInto s pfs samples = do
         , show numchans
         ]
 
-retrieve :: State -> Int -> IO [V.Vector CFloat]
+retrieve :: State -> Int -> IO [V.Vector Float]
 retrieve s samples = do
   numchans <- getChannelCount s
   ps <- replicateM numchans $ mallocArray samples
   actual <- retrieveInto s ps samples
   forM ps $ \p -> do
-    fp <- newForeignPtr finalizerFree p
+    fp <- newForeignPtr finalizerFree $ castPtr p
     return $ V.unsafeFromForeignPtr0 fp actual
 
 getChannelCount :: State -> IO Int

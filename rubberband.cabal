@@ -23,6 +23,9 @@ library
 executable wavstretch
   hs-source-dirs:      wavstretch
   main-is:             Main.hs
-  build-depends:       base, rubberband, WAVE, vector >= 0.10.9 && < 0.11
+  build-depends:       base
+                       , rubberband
+                       , WAVE
+                       , vector >= 0.10.9 && < 0.11
   default-language:    Haskell2010
   ghc-options:         -Wall

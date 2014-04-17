@@ -7,16 +7,15 @@ import Data.WAVE
 import System.Environment (getArgs)
 import Control.Monad (forM_)
 import Data.List (transpose)
-import Foreign.C.Types (CFloat)
 
 import qualified Data.Vector.Storable as V
 
-toArrays :: WAVESamples -> [V.Vector CFloat]
+toArrays :: WAVESamples -> [V.Vector Float]
 toArrays ws = do
   chan <- transpose ws
   return $ V.fromList $ map (realToFrac . sampleToDouble) chan
 
-fromArrays :: [V.Vector CFloat] -> WAVESamples
+fromArrays :: [V.Vector Float] -> WAVESamples
 fromArrays ars = transpose $ do
   ar <- ars
   return $ map (doubleToSample . realToFrac) $ V.toList ar
