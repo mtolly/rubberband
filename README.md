@@ -7,4 +7,4 @@ audio stretching library. Two interfaces are provided:
   state object and easier memory management via Haskell vectors instead of pointers.
 
 A sample application `wavstretch` is also provided to demonstrate the high-level
-interface. Currently it only works on very small files due to unwise memory usage.
+interface.
