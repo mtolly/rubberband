@@ -25,7 +25,8 @@ executable wavstretch
   main-is:             Main.hs
   build-depends:       base
                        , rubberband
-                       , WAVE
                        , vector >= 0.10.9 && < 0.11
+                       , hsndfile
+                       , hsndfile-vector
   default-language:    Haskell2010
   ghc-options:         -Wall
