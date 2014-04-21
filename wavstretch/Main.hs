@@ -14,13 +14,14 @@ import qualified Data.Vector.Storable as V
 main :: IO ()
 main = do
   argv <- getArgs
-  (fin, fout, ratio) <- case argv of
-    [x, y, z] -> return (x, y, read z)
-    _ -> error "invalid usage"
+  (fin, fout, trat, frat) <- case argv of
+    [a, b, c] -> return (a, b, read c, 1)
+    [a, b, c, d] -> return (a, b, read c, read d)
+    _ -> error "Usage: wavstretch in.wav out.wav time-ratio [freq-ratio]"
   hndl <- openFile fin ReadMode defaultInfo
   let Info nframes fps nchannels _fmt nsections skbl = hInfo hndl
   when (not skbl) $ error "File is somehow not seekable?"
-  s <- new (fromIntegral fps) (fromIntegral nchannels) defaultOptions ratio 1
+  s <- new (fromIntegral fps) (fromIntegral nchannels) defaultOptions trat frat
   --setDebugLevel s 3
   setExpectedInputDuration s nframes
 
@@ -41,7 +42,7 @@ main = do
   when (seekPos /= 0) $ error "File somehow was not seeked to 0"
 
   hndl2 <- openFile fout WriteMode $ Info
-    { frames = floor $ fromIntegral nframes * ratio
+    { frames = floor $ fromIntegral nframes * trat
     , samplerate = fps
     , channels = nchannels
     , format = Format HeaderFormatWav SampleFormatPcm16 EndianFile
