@@ -1,6 +1,24 @@
 {- |
 
-A nicer layer above the C API.
+Threading notes for real-time applications:
+
+Multiple instances of 'State' may be created and used
+in separate threads concurrently.  However, for any single instance
+of 'State', you may not call 'process' more than once
+concurrently, and you may not change the time or pitch ratio while
+a 'process' call is being executed (if the stretcher was created in
+"real-time mode"; in "offline mode" you can't change the ratios
+during use anyway).
+
+So you can run 'process' in its own thread if you like, but if you
+want to change ratios dynamically from a different thread, you will
+need some form of mutex in your code.  Changing the time or pitch
+ratio is real-time safe except in extreme circumstances, so for
+most applications that may change these dynamically it probably
+makes most sense to do so from the same thread as calls 'process',
+even if that is a real-time thread.
+
+Differences from "Sound.RubberBand.Raw":
 
   * The 'State' object is garbage-collected by Haskell.
 
@@ -12,7 +30,40 @@ A nicer layer above the C API.
     from how many channels the 'State' was constructed with.
 
 -}
-module Sound.RubberBand.Nice where
+module Sound.RubberBand.Nice
+
+( State()
+, withRawState
+
+, new, reset
+
+, setTimeRatio, setPitchScale
+, getTimeRatio, getPitchScale
+, getLatency
+
+, setTransientsOption
+, setDetectorOption
+, setPhaseOption
+, setFormantOption
+, setPitchOption
+
+, setExpectedInputDuration
+, getSamplesRequired
+
+, setMaxProcessSize
+, setKeyFrameMap
+
+, study, process
+, available, retrieve
+
+, getChannelCount
+
+, calculateStretch
+
+, setDebugLevel
+, setDefaultDebugLevel
+
+) where
 
 import qualified Sound.RubberBand.Raw as Raw
 import Sound.RubberBand.Raw (SampleRate, NumChannels, TimeRatio, PitchScale)
@@ -27,7 +78,7 @@ import Foreign.C.Types (CFloat)
 import Control.Monad (guard, forM, replicateM)
 
 newtype State = State (ForeignPtr Raw.State)
-  deriving (Eq)
+  deriving (Eq, Ord, Show)
 
 withRawState :: State -> (Raw.State -> IO a) -> IO a
 withRawState (State fp) f = withForeignPtr fp $ f . Raw.State

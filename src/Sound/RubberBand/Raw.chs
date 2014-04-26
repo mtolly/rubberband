@@ -1,4 +1,37 @@
-module Sound.RubberBand.Raw where
+module Sound.RubberBand.Raw
+
+( State(..)
+, SampleRate, NumChannels, TimeRatio, PitchScale
+
+, new, delete, p_delete, reset
+
+, setTimeRatio, setPitchScale
+, getTimeRatio, getPitchScale
+, getLatency
+
+, setTransientsOption
+, setDetectorOption
+, setPhaseOption
+, setFormantOption
+, setPitchOption
+
+, setExpectedInputDuration
+, getSamplesRequired
+
+, setMaxProcessSize
+, setKeyFrameMap
+
+, study, process
+, available, retrieve
+
+, getChannelCount
+
+, calculateStretch
+
+, setDebugLevel
+, setDefaultDebugLevel
+
+) where
 
 import Foreign.Ptr (Ptr, FunPtr)
 import Foreign.C.Types
