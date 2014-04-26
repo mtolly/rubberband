@@ -1,6 +1,6 @@
 module Sound.RubberBand.Raw
 
-( State(..)
+( Stretcher(..)
 , SampleRate, NumChannels, TimeRatio, PitchScale
 
 , new, delete, p_delete, reset
@@ -47,7 +47,7 @@ fromOptions' = fromIntegral . fromOptions
 optionEnum' :: (Option o, Integral a) => o -> a
 optionEnum' = fromIntegral . optionEnum
 
-{#pointer RubberBandState as State newtype #}
+{#pointer RubberBandState as Stretcher newtype #}
 
 {#context prefix="rubberband_"#}
 
@@ -62,70 +62,70 @@ type PitchScale = Double
   , fromOptions' `Options'
   , realToFrac `TimeRatio'
   , realToFrac `PitchScale'
-  } -> `State' #}
+  } -> `Stretcher' #}
 
 {#fun delete as ^
-  { `State' } -> `()' #}
+  { `Stretcher' } -> `()' #}
 
 -- | Suitable for a 'Foreign.ForeignPtr' finalizer.
 foreign import ccall "&rubberband_delete"
-  p_delete :: FunPtr (Ptr State -> IO ())
+  p_delete :: FunPtr (Ptr Stretcher -> IO ())
 
 {#fun reset as ^
-  { `State' } -> `()' #}
+  { `Stretcher' } -> `()' #}
 
 {#fun set_time_ratio as ^
-  { `State', realToFrac `TimeRatio' } -> `()' #}
+  { `Stretcher', realToFrac `TimeRatio' } -> `()' #}
 {#fun set_pitch_scale as ^
-  { `State', realToFrac `PitchScale' } -> `()' #}
+  { `Stretcher', realToFrac `PitchScale' } -> `()' #}
 
 {#fun get_time_ratio as ^
-  { `State' } -> `TimeRatio' realToFrac #}
+  { `Stretcher' } -> `TimeRatio' realToFrac #}
 {#fun get_pitch_scale as ^
-  { `State' } -> `PitchScale' realToFrac #}
+  { `Stretcher' } -> `PitchScale' realToFrac #}
 
 {#fun get_latency as ^
-  { `State' } -> `Int' #}
+  { `Stretcher' } -> `Int' #}
 
 {#fun set_transients_option as ^
-  { `State', optionEnum' `Transients' } -> `()' #}
+  { `Stretcher', optionEnum' `Transients' } -> `()' #}
 {#fun set_detector_option as ^
-  { `State', optionEnum' `Detector' } -> `()' #}
+  { `Stretcher', optionEnum' `Detector' } -> `()' #}
 {#fun set_phase_option as ^
-  { `State', optionEnum' `Phase' } -> `()' #}
+  { `Stretcher', optionEnum' `Phase' } -> `()' #}
 {#fun set_formant_option as ^
-  { `State', optionEnum' `Formant' } -> `()' #}
+  { `Stretcher', optionEnum' `Formant' } -> `()' #}
 {#fun set_pitch_option as ^
-  { `State', optionEnum' `Pitch' } -> `()' #}
+  { `Stretcher', optionEnum' `Pitch' } -> `()' #}
 
 {#fun set_expected_input_duration as ^
-  { `State', `Int' } -> `()' #}
+  { `Stretcher', `Int' } -> `()' #}
 
 {#fun get_samples_required as ^
-  { `State' } -> `Int' #}
+  { `Stretcher' } -> `Int' #}
 
 {#fun set_max_process_size as ^
-  { `State', `Int' } -> `()' #}
+  { `Stretcher', `Int' } -> `()' #}
 {#fun set_key_frame_map as ^
-  { `State', `Int', id `Ptr CUInt', id `Ptr CUInt' } -> `()' #}
+  { `Stretcher', `Int', id `Ptr CUInt', id `Ptr CUInt' } -> `()' #}
 
 {#fun study as ^
-  { `State', id `Ptr (Ptr CFloat)', `Int', `Bool' } -> `()' #}
+  { `Stretcher', id `Ptr (Ptr CFloat)', `Int', `Bool' } -> `()' #}
 {#fun process as ^
-  { `State', id `Ptr (Ptr CFloat)', `Int', `Bool' } -> `()' #}
+  { `Stretcher', id `Ptr (Ptr CFloat)', `Int', `Bool' } -> `()' #}
 
 {#fun available as ^
-  { `State' } -> `Int' #}
+  { `Stretcher' } -> `Int' #}
 {#fun retrieve as ^
-  { `State', id `Ptr (Ptr CFloat)', `Int' } -> `Int' #}
+  { `Stretcher', id `Ptr (Ptr CFloat)', `Int' } -> `Int' #}
 
 {#fun get_channel_count as ^
-  { `State' } -> `Int' #}
+  { `Stretcher' } -> `Int' #}
 
 {#fun calculate_stretch as ^
-  { `State' } -> `()' #}
+  { `Stretcher' } -> `()' #}
 
 {#fun set_debug_level as ^
-  { `State', `Int' } -> `()' #}
+  { `Stretcher', `Int' } -> `()' #}
 {#fun set_default_debug_level as ^
   { `Int' } -> `()' #}

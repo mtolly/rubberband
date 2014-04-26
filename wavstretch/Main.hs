@@ -69,7 +69,7 @@ groupsOf n xs = case splitAt n xs of
   ([], []) -> []
   (ys, zs) -> ys : groupsOf n zs
 
-processRetrieveAll :: Count -> Count -> State -> Handle -> Handle -> IO ()
+processRetrieveAll :: Count -> Count -> Stretcher -> Handle -> Handle -> IO ()
 processRetrieveAll pos len s hin hout = do
   avail <- available s
   case avail of
