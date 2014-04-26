@@ -51,9 +51,20 @@ optionEnum' = fromIntegral . optionEnum
 
 {#context prefix="rubberband_"#}
 
+-- | Samples per second of the input and output audio.
 type SampleRate = Int
+
+-- | The number of channels processed by a stretcher.
 type NumChannels = Int
+
+-- | A ratio of stretched duration to unstretched (original) duration.
 type TimeRatio = Double
+
+{- |
+A ratio of output frequencies to input frequencies. For example, a ratio of
+2 will increase the audio by one octave, and 0.5 will decrease it by one
+octave.
+-}
 type PitchScale = Double
 
 {#fun new as ^

@@ -1,4 +1,29 @@
-module Sound.RubberBand.Option where
+module Sound.RubberBand.Option
+( Options(..)
+
+, Process(..)
+, Stretch(..)
+, Transients(..)
+, Detector(..)
+, Phase(..)
+, Threading(..)
+, Window(..)
+, Smoothing(..)
+, Formant(..)
+, Pitch(..)
+, Channels(..)
+
+, Option(..)
+
+, setOption
+, getOption
+
+, toOptions
+, fromOptions
+
+, defaultOptions
+, percussiveOptions
+) where
 
 import Data.Bits ((.|.), (.&.), complement)
 import Data.Maybe (fromMaybe)
@@ -321,7 +346,10 @@ data Channels
   -}
   deriving (Eq, Ord, Show, Read, Enum, Bounded)
 
+-- | A more limited enumeration class, without the extra functionality of
+-- Haskell's 'Enum'.
 class (Enum o, Bounded o) => Option o where
+  -- | Note that 'optionEnum' returns different values from 'toEnum'.
   optionEnum :: o -> Int
 
 setOption :: (Option o) => o -> Int -> Int
@@ -329,6 +357,9 @@ setOption o i = let
   allOptions = [minBound..maxBound] `asTypeOf` [o]
   mask = foldr (.|.) 0 $ map optionEnum allOptions
   in (i .&. complement mask) .|. optionEnum o
+  -- Each option type uses some bits of an 'Int' for its value.
+  -- Conveniently only the low 29 bits are used, fitting nicely
+  -- into the Haskell Report's 30-bit guaranteed 'Int' size.
 
 getOption :: (Option o) => Int -> o
 getOption i = let
