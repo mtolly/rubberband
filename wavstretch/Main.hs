@@ -78,13 +78,13 @@ processRetrieveAll pos len s hin hout = do
       req <- getSamplesRequired s
       if req == 0
         then do
-          putStrLn "Thinking"
+          --putStrLn "Thinking"
           processRetrieveAll pos len s hin hout
         else do
           let isFinal = len - pos <= req
           if pos == len
             then do
-              putStrLn "We don't have any samples to provide"
+              --putStrLn "We don't have any samples to provide"
               processRetrieveAll pos len s hin hout
             else do
               chans <- getDeinterleaved hin req

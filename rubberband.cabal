@@ -19,14 +19,3 @@ library
   includes:            rubberband/rubberband-c.h
   extra-libraries:     rubberband
   ghc-options:         -Wall
-
-executable wavstretch
-  hs-source-dirs:      wavstretch
-  main-is:             Main.hs
-  build-depends:       base
-                       , rubberband
-                       , vector >= 0.10.9 && < 0.11
-                       , hsndfile
-                       , hsndfile-vector
-  default-language:    Haskell2010
-  ghc-options:         -Wall
