@@ -143,18 +143,18 @@ corresponding to a shift of @s@ equal-tempered semitones (where @s@
 is positive for an upwards shift and negative for downwards) is
 @2 ** (s / 12)@.
 
-If the stretcher was constructed in Offline mode, the pitch
+If the stretcher was constructed in 'Offline' mode, the pitch
 scaling ratio is fixed throughout operation; this function may
 be called any number of times between construction (or a call
 to 'reset') and the first call to 'study' or 'process', but may
 not be called after 'study' or 'process' has been called.
 
-If the stretcher was constructed in RealTime mode, the pitch
+If the stretcher was constructed in 'RealTime' mode, the pitch
 scaling ratio may be varied during operation; this function may
 be called at any time, so long as it is not called concurrently
 with 'process'.  You should either call this function from the
 same thread as 'process', or provide your own mutex or similar
-mechanism to ensure that setPitchScale and 'process' cannot be
+mechanism to ensure that 'setPitchScale' and 'process' cannot be
 run at once (there is no internal mutex for this purpose).
 -}
 setPitchScale :: Stretcher -> PitchScale -> IO ()
