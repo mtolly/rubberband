@@ -82,7 +82,7 @@ import Control.Monad (guard, forM, replicateM)
 newtype Stretcher = Stretcher (ForeignPtr Raw.Stretcher)
   deriving (Eq, Ord, Show)
 
--- | Allows you to use the functions in "Sound.RubberBand.Nice" if needed.
+-- | Allows you to use the functions in "Sound.RubberBand.Raw" if needed.
 withRaw :: Stretcher -> (Raw.Stretcher -> IO a) -> IO a
 withRaw (Stretcher fp) f = withForeignPtr fp $ f . Raw.Stretcher
 
