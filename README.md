@@ -8,3 +8,7 @@ audio stretching library. Two interfaces are provided:
 
 A sample application `wavstretch` is also provided to demonstrate the high-level
 interface.
+
+Now available on [Hackage], so you can install with `cabal install rubberband`.
+
+[Hackage]: http://hackage.haskell.org/package/rubberband
