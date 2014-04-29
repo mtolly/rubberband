@@ -364,21 +364,27 @@ This is only meaningful in 'Offline' mode, and is required if
 running in that mode.  You should pass the entire input through
 'study' before any 'process' calls are made, as a sequence of
 blocks in individual 'study' calls, or as a single large block.
-
-The input list should be de-interleaved audio data with one float vector
-per channel. The 'Bool' should be 'True' if this is the last block of data
-that will be provided to 'study' before the first 'process' call.
 -}
-study :: Stretcher -> [V.Vector Float] -> Bool -> IO ()
+study
+  :: Stretcher
+  -> [V.Vector Float]
+  -- ^ De-interleaved audio data, one vector per channel.
+  -> Bool
+  -- ^ 'True' if this is the last block of data
+  -- that will be provided to 'study' before the first 'process' call.
+  -> IO ()
 study = studyProcess "study" Raw.study
 
 {- |
 Provide a block of sample frames for processing.
 See also 'getSamplesRequired' and 'setMaxProcessSize'.
-
-Set the 'Bool' to 'True' if this is the last block of input data.
 -}
-process :: Stretcher -> [V.Vector Float] -> Bool -> IO ()
+process
+  :: Stretcher
+  -> [V.Vector Float]
+  -> Bool
+  -- ^ 'True' if this is the last block of input data.
+  -> IO ()
 process = studyProcess "process" Raw.process
 
 {- |
