@@ -15,6 +15,6 @@ executable wavstretch
                        , vector          >= 0.10.9 && < 0.11
                        , hsndfile        >= 0.7.1  && < 0.8
                        , hsndfile-vector >= 0.5.2  && < 0.6
-                       , rubberband      == 0.1.0.0
+                       , rubberband      == 0.1
   default-language:    Haskell2010
   ghc-options:         -Wall
