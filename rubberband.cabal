@@ -33,6 +33,7 @@ library
   default-language:   Haskell2010
   includes:           rubberband/rubberband-c.h
   extra-libraries:    rubberband
+  pkgconfig-depends:  rubberband == 1.8.1
   ghc-options:        -Wall
 
 Source-Repository head

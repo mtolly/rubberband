@@ -357,7 +357,7 @@ studyProcess fname f s chans final = do
           ]
 
 {- |
-Provide a block of "samples" sample frames for the stretcher to
+Provide a block of sample frames for the stretcher to
 study and calculate a stretch profile from.
 
 This is only meaningful in 'Offline' mode, and is required if
