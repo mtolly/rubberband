@@ -73,9 +73,11 @@ import Foreign
   (Ptr, ForeignPtr, newForeignPtr, withForeignPtr, finalizerFree, castPtr)
 import Control.Applicative ((<$>))
 import Foreign.Marshal.Array (withArray, withArrayLen, mallocArray)
+import Foreign.Marshal.Utils (withMany)
 import qualified Data.Vector.Storable as V
 import Foreign.C.Types (CFloat)
 import Control.Monad (guard, forM, replicateM)
+import Data.List (foldl')
 
 -- | An audio stretching machine. This object is garbage-collected on the
 -- Haskell side, so it will be deleted automatically.
@@ -323,28 +325,17 @@ setKeyFrameMap s pairs = withRaw s $ \r ->
     withArray (map (fromIntegral . snd) pairs) $ \p2 ->
       Raw.setKeyFrameMap r (length pairs) p1 p2
 
-unsafeWiths :: (V.Storable e) => [V.Vector e] -> ([Ptr e] -> IO a) -> IO a
-unsafeWiths []       f = f []
-unsafeWiths (x : xs) f =
-  V.unsafeWith x $ \p ->
-    unsafeWiths xs $ \ps ->
-      f $ p : ps
-
-getUniform :: (Eq a) => [a] -> Maybe a
-getUniform (x : xs) = guard (all (== x) xs) >> Just x
-getUniform []       = Nothing
-
 -- | Ugly, but needed to share the code for 'study' and 'process'.
 studyProcess ::
   String -> (Raw.Stretcher -> Ptr (Ptr CFloat) -> Int -> Bool -> IO ()) ->
     Stretcher -> [V.Vector Float] -> Bool -> IO ()
 studyProcess fname f s chans final = do
-  samples <- case getUniform $ map V.length chans of
-    Nothing -> error $ fname ++ ": " ++ if null chans
-      then "no input arrays given"
-      else "input arrays have differing lengths"
-    Just sam -> return sam
-  unsafeWiths chans $ \pfs ->
+  let samples = foldl' max 0 $ map V.length chans
+      lengthen vect = case samples - V.length vect of
+        0 -> vect
+        d -> vect V.++ V.replicate d 0 -- pad right end with zero samples
+      chans' = map lengthen chans
+  withMany V.unsafeWith chans' $ \pfs ->
     withArrayLen pfs $ \len ppf -> do
       numchans <- getChannelCount s
       if numchans == len
