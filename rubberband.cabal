@@ -38,4 +38,4 @@ library
 
 Source-Repository head
   type:             git
-  location:         git://github.com/mtolly/rubberband.git
+  location:         https://github.com/mtolly/rubberband
