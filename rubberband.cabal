@@ -2,19 +2,20 @@ name:               rubberband
 version:            0.1
 synopsis:           Binding to the C++ audio stretching library Rubber Band
 
-description:        Rubber Band is a high quality software library for audio
+description:        <http://breakfastquay.com/rubberband/ Rubber Band Library>
+                    is a high quality software library for audio
                     time-stretching and pitch-shifting. It permits you to
                     change the tempo and pitch of an audio stream or recording
                     dynamically and independently of one another.
                     .
-                    Rubber Band is open source software under the GNU General
-                    Public License. If you want to distribute it in a
-                    proprietary commercial application, you need to buy a
-                    license: <http://breakfastquay.com/rubberband/license.html>
+                    Rubber Band Library is open source software under the GNU
+                    General Public License. If you want to distribute it in a
+                    proprietary commercial application, you need to
+                    <http://breakfastquay.com/rubberband/license.html buy a license>.
                     .
-                    This is a binding to Rubber Band library v1.8.1.
+                    This is a binding to Rubber Band Library v1.8.1.
 
-homepage:           http://breakfastquay.com/rubberband/
+homepage:           https://github.com/mtolly/rubberband
 license:            GPL-3
 license-file:       LICENSE
 author:             Michael Tolly
@@ -22,6 +23,7 @@ maintainer:         miketolly@gmail.com
 category:           Sound
 build-type:         Simple
 cabal-version:      >=1.10
+bug-reports:        https://github.com/mtolly/rubberband/issues
 
 library
   exposed-modules:    Sound.RubberBand
