@@ -16,4 +16,7 @@ before_install:
   - tar -xjvf rubberband-1.8.1.tar.bz2
   - (cd rubberband-1.8.1 && ./configure --prefix=/usr && make && sudo make install)
 
+  # Have to install alex explicitly for c2hs,
+  # because the older travis version does not work with ghc 7.8
+  - cabal install alex happy
   - cabal install c2hs
