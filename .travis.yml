@@ -1,13 +1,11 @@
 language: haskell
 before_install:
 
-  - wget http://www.fftw.org/fftw-3.3.4.tar.gz
-  - tar -xzvf fftw-3.3.4.tar.gz
-  - cd fftw-3.3.4 && ./configure --prefix=/usr && make && sudo make install
+  - sudo apt-get update -qq
 
-  - wget http://www.mega-nerd.com/SRC/libsamplerate-0.1.8.tar.gz
-  - tar -xzvf libsamplerate-0.1.8.tar.gz
-  - cd libsamplerate-0.1.8 && ./configure --prefix=/usr && make && sudo make install
+  - sudo apt-get install -y libfftw3-dev
+  - sudo apt-get install -y libsamplerate0-dev
+  - sudo apt-get install -y libsndfile1-dev
 
   - wget http://code.breakfastquay.com/attachments/download/34/rubberband-1.8.1.tar.bz2
   - tar -xjvf rubberband-1.8.1.tar.bz2
