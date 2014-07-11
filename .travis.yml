@@ -1,9 +1,17 @@
 language: haskell
+
+ghc:
+  - 7.4
+  - 7.6
+  - 7.8
+
 before_install:
 
+  # Rubberband dependencies
   - sudo apt-get update -qq
   - sudo apt-get install -y libfftw3-dev libsamplerate0-dev libsndfile1-dev vamp-plugin-sdk ladspa-sdk
 
+  # We install rubberband from source because Ubuntu 12.04 has an old version
   - wget http://code.breakfastquay.com/attachments/download/34/rubberband-1.8.1.tar.bz2
   - tar -xjvf rubberband-1.8.1.tar.bz2
   - (cd rubberband-1.8.1 && ./configure --prefix=/usr && make && sudo make install)
