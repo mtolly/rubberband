@@ -7,3 +7,5 @@ before_install:
   - wget http://code.breakfastquay.com/attachments/download/34/rubberband-1.8.1.tar.bz2
   - tar -xjvf rubberband-1.8.1.tar.bz2
   - (cd rubberband-1.8.1 && ./configure --prefix=/usr && make && sudo make install)
+
+  - cabal install c2hs
