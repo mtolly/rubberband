@@ -38,6 +38,12 @@ library
   pkgconfig-depends:  rubberband == 1.8.1
   ghc-options:        -Wall
 
+Test-Suite test-rubberband
+  Type:             exitcode-stdio-1.0
+  Main-Is:          test.hs
+  Build-Depends:    base, rubberband
+  Ghc-Options:      -Wall
+
 Source-Repository head
   type:             git
   location:         https://github.com/mtolly/rubberband
