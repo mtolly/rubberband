@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/mtolly/rubberband.svg?branch=master)](https://travis-ci.org/mtolly/rubberband)
+
 This is a Haskell binding to the [Rubber Band](http://breakfastquay.com/rubberband/)
 audio stretching library. Two interfaces are provided:
 
