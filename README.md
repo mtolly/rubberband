@@ -1,4 +1,4 @@
-[![Available on Hackage](https://img.shields.io/hackage/v/jammittools.svg)](http://hackage.haskell.org/package/jammittools) [![Build Status](https://travis-ci.org/mtolly/rubberband.svg?branch=master)](https://travis-ci.org/mtolly/rubberband)
+[![Available on Hackage](https://img.shields.io/hackage/v/rubberband.svg)](http://hackage.haskell.org/package/rubberband) [![Build Status](https://travis-ci.org/mtolly/rubberband.svg?branch=master)](https://travis-ci.org/mtolly/rubberband)
 
 This is a Haskell binding to the [Rubber Band](http://breakfastquay.com/rubberband/)
 audio stretching library. Two interfaces are provided:
