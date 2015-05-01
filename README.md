@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/mtolly/rubberband.svg?branch=master)](https://travis-ci.org/mtolly/rubberband)
+[![Available on Hackage](https://img.shields.io/hackage/v/jammittools.svg)](http://hackage.haskell.org/package/jammittools) [![Build Status](https://travis-ci.org/mtolly/rubberband.svg?branch=master)](https://travis-ci.org/mtolly/rubberband)
 
 This is a Haskell binding to the [Rubber Band](http://breakfastquay.com/rubberband/)
 audio stretching library. Two interfaces are provided:
@@ -12,5 +12,3 @@ A sample application `wavstretch` is also provided to demonstrate the high-level
 interface.
 
 Now available on [Hackage], so you can install with `cabal install rubberband`.
-
-[Hackage]: http://hackage.haskell.org/package/rubberband
