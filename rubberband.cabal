@@ -24,6 +24,7 @@ category:           Sound
 build-type:         Simple
 cabal-version:      >= 1.10
 bug-reports:        https://github.com/mtolly/rubberband/issues
+extra-source-files: README.md
 
 library
   exposed-modules:    Sound.RubberBand
