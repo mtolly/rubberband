@@ -11,7 +11,7 @@ cabal-version:       >=1.10
 
 executable wavstretch
   main-is:             Main.hs
-  build-depends:       base              >= 4.6    && < 4.8
+  build-depends:       base              >= 4.6    && < 4.9
                        , vector          >= 0.10.9 && < 0.11
                        , hsndfile        >= 0.7.1  && < 0.8
                        , hsndfile-vector >= 0.5.2  && < 0.6
