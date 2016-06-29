@@ -11,9 +11,9 @@ cabal-version:       >=1.10
 
 executable wavstretch
   main-is:             Main.hs
-  build-depends:       base              >= 4.6    && < 4.9
-                       , vector          >= 0.10.9 && < 0.11
-                       , hsndfile        >= 0.7.1  && < 0.8
+  build-depends:       base              >= 4.6    && < 4.10
+                       , vector          >= 0.10.9 && < 0.12
+                       , hsndfile        >= 0.7.1  && < 0.9
                        , hsndfile-vector >= 0.5.2  && < 0.6
                        , rubberband      == 0.1.0.2
   default-language:    Haskell2010

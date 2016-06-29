@@ -2,7 +2,4 @@ flags: {}
 packages:
 - '.'
 - wavstretch/
-extra-deps:
-- hsndfile-0.7.1
-- hsndfile-vector-0.5.2
-resolver: nightly-2015-06-28
+resolver: nightly-2016-06-17
